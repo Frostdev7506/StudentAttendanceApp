@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = ({ route, navigation }) => {
   // Get the passed username value from route.params
@@ -23,16 +24,16 @@ const HomeScreen = ({ route, navigation }) => {
       headerRight: () => (
         <TouchableOpacity onPress={handleLogout}>
           <View
-            style={{
-              backgroundColor: "blue",
-              borderRadius: 60,
-              height: 50,
-              width: 100,
-              marginHorizontal: 5,
-              padding: 5,
-            }}
+            // style={{
+            //   backgroundColor: "blue",
+            //   borderRadius: 60,
+            //   height: 50,
+            //   width: 100,
+            //   marginHorizontal: 5,
+            //   padding: 5,
+            // }}
           >
-            <Text
+            {/* <Text
               style={{
                 color: "white",
                 padding: 5,
@@ -41,7 +42,8 @@ const HomeScreen = ({ route, navigation }) => {
               }}
             >
               Logout
-            </Text>
+            </Text> */}
+            <Icon name="ios-log-out" size={30} color="white"/>
           </View>
         </TouchableOpacity>
       ),

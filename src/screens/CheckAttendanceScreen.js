@@ -1,34 +1,48 @@
-import React from "react";
-import { useEffect } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// CheckAttendanceScreen.js
+import React, { useState } from "react";
+import { Alert, View, Text, StyleSheet, Button } from "react-native";
+import StudentTable from "../components/StudentTable";
 
 const CheckAttendanceScreen = ({ route, navigation }) => {
-  // Get the passed username value from route.params
   const { username } = route.params;
+  const [studentAttendanceData, setStudentAttendanceData] = useState([]);
 
-  console.log(route.params);
+  const CheckAttendance = async () => {
+    try {
+      const response = await fetch("http://192.168.31.170:5000/checkAttendance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", 
+        },
+        body: JSON.stringify({
+          username,
+          apptype: "student", 
+        }),
+      });
 
-  const handleLogout = async () => {
-    // Clear the token and username from async storage
-    await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("username");
-
-    // Navigate back to the Login screen
-    navigation.replace("Login");
+      const data = await response.json();
+      console.log("student data", data);
+      setStudentAttendanceData(data);
+      
+      if (data.error) {
+        Alert.alert("Error", data.error);
+      } else {
+        Alert.alert("Data found", `Found username ${data[0].student_id}`);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => <Button title="Logout" onPress={handleLogout} />,
-    });
-  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <Text>
-        Hi {route.params.username}, Welcome to Student Attendance App!
+      <Text style={styles.elements}>
+        Hi {route.params.username}, Kindly check your Attendance!
       </Text>
+      <Button title="Check Attendance" onPress={CheckAttendance} />
+      {studentAttendanceData.length > 0 && (
+        <StudentTable data={studentAttendanceData} />
+      )}
     </View>
   );
 };
@@ -36,8 +50,13 @@ const CheckAttendanceScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    padding: 10,
+    justifyContent: "flex-start",
     alignItems: "center",
+  },
+  elements: {
+    padding: 10,
+    margin: 10,
   },
 });
 
